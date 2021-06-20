@@ -20,9 +20,9 @@ class SearchImage extends ContentComponent {
     dogbreed = dogbreed.split(' ');
     // a dogbreed változó mostmnár egy tömb
     if (dogbreed.length === 1) {
-      urlString = `https://dog.ceo/api/breed/${dogbreed[0]}/images`;
+      urlString = `https://dog.ceo/api/breed/${dogbreed[0].toLowerCase()}/images`;
     } else if (dogbreed.length === 2) {
-      urlString = `https://dog.ceo/api/breed/${dogbreed[1]}/images`;
+      urlString = `https://dog.ceo/api/breed/${dogbreed[1].toLowerCase()}/${dogbreed[0].toLowerCase()}/images`;
     }
     const response = await fetch(urlString);
 
