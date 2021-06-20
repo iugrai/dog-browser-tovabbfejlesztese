@@ -33,14 +33,13 @@ class SearchImage extends ContentComponent {
 
   // megjelenít egy képet véletlenszerűen
   displayImages(data) {
-    this.clearErrors();
-    this.clearContent();
+
     const image = document.createElement('img');
     {/* <img src="" alt="" class="src"> */ }
     // a data.message tömbből egy véletlenszerű elemet kiválasztunk
     image.src = data.message[Math.floor(Math.random() * data.message.length)];
     document.querySelector('#content').appendChild(image);
-    console.log(data);
+    // console.log(data);
   }
   // megjeleníti a keresőt:
   render() {
@@ -48,15 +47,26 @@ class SearchImage extends ContentComponent {
       <form class="dog-search" >
         <span class="search-icon"></span>
         <input type="text" id="dogSearchInput">
+        <input type="text" id="imageNumberInput" placeholder="1">
           <button>Search</button>
 </form>
     `;
     document.querySelector('#header').insertAdjacentHTML('beforeend', markup);
-    console.log(this);
+    // console.log(this);
     // az arrow functionnek nincs saját kulcsszava, tehát az arrow function-ön belül a this ugyanazt fogja jeleníteni mint az azon kívül (a class-t amiben vagyunk)
     document.querySelector('.dog-search button').addEventListener('click', (event) => {
       event.preventDefault();
       const searchTerm = document.querySelector('#dogSearchInput').value;
+      // 2. feladat
+      let count;
+      let imageNumberValue = Math.floor(parseInt(document.querySelector('#imageNumberInput').value));
+      if (isNaN(imageNumberValue) === true || imageNumberValue < 1) {
+        count = 1;
+      }
+      else {
+        count = imageNumberValue;
+      }
+
       // mivel a getImages egy async method, ezért ez is promise-al tér vissza
       // emiatt, a promise object-en amit a getImages visszaad, elérhető a .then() metódus
       // a then metódus bemeneti paramétere egy callback function, ami akkor fut le amikor
@@ -64,10 +74,17 @@ class SearchImage extends ContentComponent {
       // ha az arrow functionben csak egy bemeneti paraméter van, akkor a zárójel elhagyható
       this.getImages(searchTerm).then((result) => {
         // ha csak egy dolgot kell csinálni az if block-ban, akkor a kódblokk {} elhagyható
+        if (result) this.displayImages(result);
         if (result) {
-          this.displayImages(result);
+          this.clearErrors();
+          this.clearContent();
+          for (let i = 1; i <= count; i++) {
+            this.displayImages(result);
+          }
         }
       });
+
+
     });
   }
 }
