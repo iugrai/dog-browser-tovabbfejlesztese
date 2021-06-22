@@ -5,15 +5,35 @@ class ListBreeds extends ContentComponent {
   constructor() {
     super();
     this.render();
+    localStorage.clear();
   }
 
   async getFullList() {
-    const response = await fetch('https://dog.ceo/api/breeds/list/all');
-    if (response.status === 404) {
-      this.displayError('Page not found');
+    // 3.feladat
+    // ellenőrizzük, hogy a localStorage-ban van-e adat
+
+    if (localStorage.getItem('infiniteScrollEnabled') === null) {
+      const response = await fetch('https://dog.ceo/api/breeds/list/all');
+
+      if (response.status === 404) {
+        this.displayError('Page not found');
+        return;
+      }
+      const data = await response.json();
+
+      // betöltjük az adatot a LocalStorage-ba stringént
+      localStorage.setItem('dogs', JSON.stringify(data));
+
+      // console.log(localStorage);
+      return data;
     }
-    const data = await response.json();
-    return data;
+    // ha már van letöltve adat akkor visszatöltjük az adatot
+    else {
+      const dogs = JSON.parse(localStorage.getItem('dogs'));
+
+      return dogs;
+    }
+
   }
 
   createListItem(title) {
